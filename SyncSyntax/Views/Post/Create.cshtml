@@ -1,1 +1,64 @@
-﻿<h1>Criar  Post</h1>
+﻿@model PostViewModel
+
+@{
+    ViewData["Title"] = "Criar Post";
+}
+
+<style>
+    .content-wrapper {
+        padding: 20px;
+        max-width: 1000px;
+        margin: 0 auto;
+        font-family: sans-serif;
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-6">
+            <h2>@ViewData["Title"]</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a class="btn btn-primary">Voltar ao inicio</a>
+        </div>
+    </div>
+
+    <hr />
+
+    <form asp-action="Create" asp-controller="Post" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+                <label asp-for="Post.Title">Titulo</label>
+                <input asp-for="Post.Title" class="form-control" />
+                <span asp-validation-for="Post.Title" class="text-danger"></span>
+        </div>
+
+        <div class="form-group" >
+            <label asp-for="Post.CategoryId">Categorias</label>
+            <select asp-for="Post.CategoryId" asp-items="Model.Categories" class="form-control">
+                <option value="" selected disabled>Selecionar categoria</option>
+            </select>
+            <span asp-validation-for="Post.CategoryId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Post.Author">Autor</label>
+            <input asp-for="Post.Author" class="form-control" />
+            <span asp-validation-for="Post.Author" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Post.Content">Conteudo</label>
+            <textarea asp-for="Post.Content" class="form-control" rows="5"></textarea>
+            <span asp-validation-for="Post.Content" class="text-danger"></span>
+        </div>
+
+        <div class ="form-group">
+            <label asp-for="FeatureImage">Imagem para seu post</label>
+            <input asp-for="FeatureImage" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-1">Criar Post</button>
+        <a class="btn btn-secondary mt-1">Voltar ao inicio</a>
+        </form>
+
+    </div>
