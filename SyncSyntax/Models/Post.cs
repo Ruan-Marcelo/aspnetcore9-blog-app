@@ -16,7 +16,7 @@ namespace SyncSyntax.Models
         public string Content { get; set; }
 
         [Required(ErrorMessage = "O Autor é Obrigatorio")]
-        [MaxLength(400, ErrorMessage = "O Nome do autor não pode ser execeder 200 caracteres")]
+        [MaxLength(100, ErrorMessage = "O Nome do autor não pode ser execeder 100 caracteres")]
         public string Author { get; set; }
 
         public string FeatureImagePath { get; set; }
