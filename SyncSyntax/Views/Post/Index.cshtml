@@ -1,1 +1,73 @@
-﻿<h1>Index Post</h1>
+﻿@using System.Collections
+@model IEnumerable<Post>
+@{
+    ViewData["Title"] = "Posts";
+}
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+</style>
+
+<div class="text-center m-3">
+    @if (ViewBag.Categories != null)
+    {
+        @foreach (var category in ViewBag.Categories)
+        {
+            <a asp-controller="post" asp-action="Index" asp-route-categoryId="@category.Id" class="badge bg-warning text-decoration-none ms-2"> @category.Name</a>
+        }
+    }
+</div>
+
+<div class="text-end my-2">
+    <a class ="btn btn-primary" asp-action="Create" asp-controller="Post">Criar novo Post</a>
+</div>
+
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var post in Model)
+    {
+        <div class="col">
+            <div class="card h-100 border-0 shadow-lg rounded-3">
+                
+                <img src="@post.FeatureImagePath"
+                     class="card-img-top"
+                     alt="@post.Title"
+                     style="height: 300px; object-fit: cover;">
+
+                <div class="card-body">
+                    <h5 class="card-title">@post.Title</h5>
+
+                    <p class="text-muted mb-2">
+                        Publicado em @post.PublishedDate.ToString("dd/MM/yyyy")
+                    </p>
+
+                    <p class="card-text">
+                        @(post.Content.Length > 100
+                            ? post.Content.Substring(0, 100) + "..."
+                            : post.Content)
+                    </p>
+
+                    <span class="badge bg-secondary">
+                        @post.Category?.Name
+                    </span>
+                </div>
+
+                <div class="card-footer d-flex justify-content-between align-items-center bg-transparent border-0">
+                    <a class="btn btn-primary btn-sm">Veja Mais</a>
+
+                    <div class="text-end">
+                        <small class="text-muted">Por @post.Author</small>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    }
+</div>
