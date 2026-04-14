@@ -22,19 +22,19 @@ namespace SyncSyntax.Controllers
         {
             var postQuery = _context.Posts.Include(p => p.Category).AsQueryable();
 
-            if(categoryId.HasValue)
+            if (categoryId.HasValue)
             {
                 postQuery = postQuery.Where(p => p.CategoryId == categoryId);
             }
-             var posts = postQuery.ToList();
-             ViewBag.Categories = _context.Categories.ToList();
+            var posts = postQuery.ToList();
+            ViewBag.Categories = _context.Categories.ToList();
 
             return View(posts);
         }
 
         [HttpGet]
         public IActionResult Create()
-        {               
+        {
             var postViewModel = new PostViewModel();
             postViewModel.Categories = _context.Categories.Select(c =>
             new SelectListItem
@@ -49,22 +49,29 @@ namespace SyncSyntax.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(PostViewModel postViewModel)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var inputFileExtension = Path.GetExtension(postViewModel.FeatureImage.FileName).ToLower();
                 bool isAlowed = _allowedExtension.Contains(inputFileExtension);
 
-                if(!isAlowed)
+                if (!isAlowed)
                 {
                     ModelState.AddModelError("", "Formato inválido. Use apenas: .jpg, .jpeg ou .png.");
                     return View(postViewModel);
                 }
 
-               postViewModel.Post.FeatureImagePath = await UploadFiletoFolder(postViewModel.FeatureImage);
+                postViewModel.Post.FeatureImagePath = await UploadFiletoFolder(postViewModel.FeatureImage);
                 await _context.Posts.AddAsync(postViewModel.Post);
                 await _context.SaveChangesAsync();
-               return RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
+            postViewModel.Categories = _context.Categories.Select(c =>
+              new SelectListItem
+              {
+                  Value = c.Id.ToString(),
+                  Text = c.Name
+              }).ToList();
+
             return View(postViewModel);
         }
 
@@ -80,11 +87,11 @@ namespace SyncSyntax.Controllers
                 Directory.CreateDirectory(imagesFolderPath);
             }
 
-            var filePath = Path.Combine(imagesFolderPath,fileName);
+            var filePath = Path.Combine(imagesFolderPath, fileName);
 
             try
             {
-                await using(var fileStream = new FileStream(filePath, FileMode.Create))
+                await using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(fileStream);
                 }
