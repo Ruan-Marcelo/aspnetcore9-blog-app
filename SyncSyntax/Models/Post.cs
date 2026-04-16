@@ -35,5 +35,8 @@ namespace SyncSyntax.Models
         [ValidateNever]
         public Category Category { get; set; }
 
+        [ValidateNever]
+        public ICollection<Comment> Comments { get; set; }
+
     }
 }
