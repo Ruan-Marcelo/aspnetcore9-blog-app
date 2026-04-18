@@ -20,7 +20,7 @@
 </style>
 
  <div class="text-end">
-     <a class="btn btn-secondary my-3">Editar Post</a>
+     <a class="btn btn-secondary my-3" asp-controller="Post" asp-action="Edit" asp-route-id="@Model.Id">Editar Post</a>
     <a class="btn btn-danger my-3">Excluir Post</a>
  </div>
 
@@ -35,7 +35,7 @@
 
     @if (Model.Comments.Any())
     {
-        <div>
+        <div id="commentSection">
             @foreach(var comment in Model.Comments)
             {
                 <div class="card mb-3 shadow-sm">
@@ -52,4 +52,79 @@
     {
         <p class="text-muted">Sem Comentarios. Seja o Primeiro a comentar</p>
     }
+      <div id="feedbackMessage" class="mt-3"></div>
+
+    <h4> Adicionar Comentario</h4>
+
+     <form id="commentForm">
+        <div class="form-group">
+            <label for="Username">Nome</label>
+            <input for="Username" id="Username" name="Username" required class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="Content">Conteudo</label>
+            <textarea for="Content" id="Content" name="Content" rows="3" required class="form-control"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2 p-2 rounded">Enviar Comentario </button>
+    </form>
 </div>
+@section Scripts{
+<script>
+$(document).ready(function(){
+
+    $("#commentForm").on('submit', function(event){
+        event.preventDefault();
+
+        var userName = $("#Username").val();
+        var content = $("#Content").val();
+        var postId = @Model.Id;
+
+        var feedback = $("#feedbackMessage");
+
+        $.ajax({
+            url: '@Url.Action("AddComment","Post")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                Username: userName,
+                Content: content,
+                PostId: postId
+            }),
+
+            success: function(response){
+                $('commentForm')[0].reset();
+                $('#commentSection').append(`
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">${response.Username}</h5>
+                            <p class="card-text text-muted">${response.CommentDate}</p>
+                            <p class="card-text">${response.Content}</p>
+                        </div>
+                    </div>
+                `);
+
+                feedback.html(`
+                    <div class="alert alert-success">
+                        Comentário enviado com sucesso!
+                    </div>
+                `);
+            },
+
+            error: function(err){
+                console.error(err);
+
+                feedback.html(`
+                    <div class="alert alert-danger">
+                        Erro ao enviar comentário. Tente novamente.
+                    </div>
+                `);
+            }
+        });
+    });
+
+});
+</script>
+}
+

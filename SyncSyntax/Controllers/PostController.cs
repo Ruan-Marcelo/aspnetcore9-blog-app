@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
+using SyncSyntax.Models;
 using SyncSyntax.Models.ViewModel;
 
 namespace SyncSyntax.Controllers
@@ -35,14 +36,14 @@ namespace SyncSyntax.Controllers
         [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
             var post = _context.Posts.Include(p => p.Category).Include(p => p.Comments)
                 .FirstOrDefault(p => p.Id == id);
 
-            if(post == null)
+            if (post == null)
             {
                 return NotFound();
             }
@@ -90,6 +91,98 @@ namespace SyncSyntax.Controllers
               }).ToList();
 
             return View(postViewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var postFromBd = await _context.Posts.FirstOrDefaultAsync(p => p.Id == id);
+
+            if (postFromBd == null)
+            {
+                return NotFound();
+            }
+
+            EditViewModel editVireModel = new EditViewModel
+            {
+                Post = postFromBd,
+                Categories = _context.Categories.Select(c =>
+                new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList()
+                };
+
+            return View(editVireModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditViewModel editViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(editViewModel);
+            }
+
+            var postFromDb = await _context.Posts.AsNoTracking().FirstOrDefaultAsync
+                (p => p.Id == editViewModel.Post.Id);
+
+            if ((postFromDb == null))
+            {
+                return NotFound();
+            }
+
+            if(editViewModel.FeatureImage != null)
+            {
+
+                var inputFileExtension = Path.GetExtension
+                    (editViewModel.FeatureImage.FileName).ToLower();
+                bool isAlowed = _allowedExtension.Contains(inputFileExtension);
+
+                if (!isAlowed)
+                {
+                    ModelState.AddModelError("", "Formato inválido. Use apenas: .jpg, .jpeg ou .png.");
+                    return View(editViewModel);
+                }
+
+                var existingfilePath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", Path.GetFileName(postFromDb.FeatureImagePath));
+
+                if (System.IO.File.Exists(existingfilePath))
+                {
+                    System.IO.File.Delete(existingfilePath);
+                }
+                editViewModel.Post.FeatureImagePath = await UploadFiletoFolder
+                    (editViewModel.FeatureImage);
+            }
+            else
+            {
+                editViewModel.Post.FeatureImagePath = postFromDb.FeatureImagePath;
+            }
+            _context.Posts.Update(editViewModel.Post);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+
+
+        }
+
+        public JsonResult AddComment([FromBody] Comment comment)
+        {
+            comment.CommentDate = DateTime.Now;
+            _context.Comments.Add(comment);
+            _context.SaveChanges();
+
+            return Json(new
+            {
+                username = comment.UserName,
+                commentDate = comment.CommentDate.ToString("MMMM dd, yyyy"),
+                content = comment.Content
+            });
         }
 
         public async Task<string> UploadFiletoFolder(IFormFile file)
