@@ -137,7 +137,11 @@ dotnet run
 ```
 
 📸 Imagens do Projeto
-
+<p align="center">
+  <img src="../imgs/home.png" width="400"/>
+    <img src="../imgs/create.png" width="400"/>
+  <img src="../imgs/detail.png" width="400"/>
+</p>
 
 ⚡ Destaques Técnicos
 🔥 Upload de Imagens com Segurança
