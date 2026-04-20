@@ -199,6 +199,17 @@ Se quiser colaborar com o projeto, você pode:
 * 📌 Abrir uma *issue* para sugerir melhorias ou reportar bugs
 * 🔧 Enviar um *pull request* com novas funcionalidades ou correções
 
+* 📚 Créditos e Agradecimentos
+
+Gostaria de deixar um agradecimento especial ao canal **SyncSyntax** no YouTube, que foi uma das principais fontes de aprendizado e referência durante o desenvolvimento deste projeto.
+
+As videoaulas contribuíram diretamente para o meu crescimento técnico em ASP.NET Core, boas práticas de desenvolvimento e construção de aplicações web completas.
+
+🔗 Canal: https://www.youtube.com/@SyncSyntax
+
+Obrigado por compartilhar conhecimento de forma clara e acessível. 🚀
+
+
 ---
 
 ## ⭐ Apoie o projeto
