@@ -138,9 +138,9 @@ dotnet run
 
 📸 Imagens do Projeto
 <p align="center">
-  <img src="../imgs/home.png" width="400"/>
-    <img src="../imgs/create.png" width="400"/>
-  <img src="../imgs/detail.png" width="400"/>
+  <img src="./imgs/Captura de tela 2026-04-20 190822.png" width="400"/>
+   <img src="./imgs/Captura de tela 2026-04-20 190847.png" width="400"/>
+   <img src="./Captura de tela 2026-04-20 190912.png width="400"/>
 </p>
 
 ⚡ Destaques Técnicos
